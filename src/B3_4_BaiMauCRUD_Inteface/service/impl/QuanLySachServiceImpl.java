@@ -33,4 +33,13 @@ public class QuanLySachServiceImpl implements QuanLySachService {
         return listSearch;
     }
 
+//    https://github.com/AnhDT11/Course-JavaCore/blob/master/So%20s%C3%A1nh%20m%E1%BA%A1nh%20m%E1%BA%BD%20v%E1%BB%9Bi%20Lambda.md
+    @Override
+    public void sortByName(List<Sach> lists) {
+        // sort theo lamda 
+        lists.sort((o1, o2) -> {
+            return o1.getTacGia().compareTo(o2.getTenSach());
+        });
+    }
+
 }

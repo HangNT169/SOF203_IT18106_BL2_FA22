@@ -15,6 +15,8 @@ public interface QuanLySachService {
 
     void xoa(List<Sach> lists, int index);
 
-    List<Sach>searchTheoTen(List<Sach>lists,String ten);
-    
+    List<Sach> searchTheoTen(List<Sach> lists, String ten);
+
+    void sortByName(List<Sach> lists);
+
 }

@@ -4,17 +4,76 @@
  */
 package B3_4_BaiMauCRUD_Inteface.view;
 
+import B3_4_BaiMauCRUD_Inteface.model.Sach;
+import B3_4_BaiMauCRUD_Inteface.service.QuanLySachService;
+import B3_4_BaiMauCRUD_Inteface.service.impl.QuanLySachServiceImpl;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author hangnt
  */
 public class ViewQuanLySach extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ViewQuanLySach
-     */
+//    Tao instance cho bien 
+    private DefaultTableModel dtm;
+    private DefaultComboBoxModel dcbm;
+    private List<Sach> lists;
+    private List<String> listNamIn;
+    private QuanLySachService quanLySachService;
+//    // inteaface = new Class 
+//    ArrayList<Sach>lsitss = new ArrayList<>();
+//    // class = new Class 
+
     public ViewQuanLySach() {
         initComponents();
+//        B1: Khoi tao instance cho cac bien
+        dtm = new DefaultTableModel();
+        dcbm = new DefaultComboBoxModel();
+        lists = new ArrayList<>();
+        listNamIn = new ArrayList<>();
+        
+        quanLySachService = new QuanLySachServiceImpl();
+
+//        B2: 
+        dtm = (DefaultTableModel) this.tbHienThi.getModel();
+        dcbm = (DefaultComboBoxModel) this.cbNamIn.getModel();
+
+//        B3: Add phan tu vao list
+        lists.add(new Sach("ten 1", "tacgia1", "Tiểu thuyết", "2000"));
+        lists.add(new Sach("ten 2", "tacgia2", "Truyện ngắn", "2001"));
+        lists.add(new Sach("ten 3", "tacgia3", "Tiểu thuyết", "2002"));
+        lists.add(new Sach("ten 4", "tacgia4", "Tiểu thuyết", "2003"));
+        lists.add(new Sach("ten 5", "tacgia5", "Truyện ngắn", "2004"));
+        
+        listNamIn.add("1999");
+        listNamIn.add("2000");
+        listNamIn.add("2001");
+        listNamIn.add("2002");
+        listNamIn.add("2003");
+        listNamIn.add("2004");
+
+//        B4: Show len tabl
+        showDataTable(lists);
+        showDataCombobox(listNamIn);
+        
+        detailSach(2);
+    }
+    
+    private void showDataTable(List<Sach> listSach) {
+        dtm.setRowCount(0); // xoa toan bo cac dong dang co trong table
+        for (Sach sach : listSach) {
+            dtm.addRow(sach.toDataRow());
+        }
+    }
+    
+    private void showDataCombobox(List<String> listCombobox) {
+        for (String s : listCombobox) {
+            dcbm.addElement(s);
+        }
     }
 
     /**
@@ -27,6 +86,7 @@ public class ViewQuanLySach extends javax.swing.JFrame {
     private void initComponents() {
 
         jCheckBox1 = new javax.swing.JCheckBox();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         txtTenSach = new javax.swing.JTextField();
         txtTacGia = new javax.swing.JTextField();
@@ -43,6 +103,7 @@ public class ViewQuanLySach extends javax.swing.JFrame {
         rdTieuThuyet = new javax.swing.JRadioButton();
         cbNamIn = new javax.swing.JComboBox<>();
         btnSearch = new javax.swing.JButton();
+        btnSort = new javax.swing.JButton();
 
         jCheckBox1.setText("jCheckBox1");
 
@@ -57,12 +118,32 @@ public class ViewQuanLySach extends javax.swing.JFrame {
         jLabel4.setText("Năm in");
 
         btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         btnXoa.setText("Xoá");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
 
         btnThoat.setText("Thoát");
+        btnThoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThoatActionPerformed(evt);
+            }
+        });
 
         tbHienThi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -75,15 +156,33 @@ public class ViewQuanLySach extends javax.swing.JFrame {
                 "Tên sách", "Tác giả", "Thể loại", "Năm in", "Trạng thái"
             }
         ));
+        tbHienThi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbHienThiMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbHienThi);
 
+        buttonGroup1.add(rdTruyenNgan);
+        rdTruyenNgan.setSelected(true);
         rdTruyenNgan.setText("Truyện ngắn");
 
+        buttonGroup1.add(rdTieuThuyet);
         rdTieuThuyet.setText("Tiểu thuyết");
 
-        cbNamIn.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         btnSearch.setText("Search theo ten");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        btnSort.setText("Sort");
+        btnSort.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSortActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -107,7 +206,11 @@ public class ViewQuanLySach extends javax.swing.JFrame {
                         .addComponent(txtTacGia, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbNamIn, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSearch)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSearch)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnSort)
+                        .addGap(28, 28, 28)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnThoat)
@@ -152,7 +255,9 @@ public class ViewQuanLySach extends javax.swing.JFrame {
                                     .addComponent(rdTieuThuyet)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(45, 45, 45)
-                                .addComponent(btnClear))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnClear)
+                                    .addComponent(btnSort)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(80, 80, 80)
                         .addComponent(btnSearch)))
@@ -169,6 +274,67 @@ public class ViewQuanLySach extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThoatActionPerformed
+        System.exit(0); // tat toan bo chuong trinh 
+//        this.dispose();
+    }//GEN-LAST:event_btnThoatActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        txtTacGia.setText(""); // xoa text field
+        cbNamIn.setSelectedIndex(0); // xoa combobox
+        buttonGroup1.clearSelection(); // xoa radio button 
+        rdTieuThuyet.setSelected(true);
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        int row = tbHienThi.getSelectedRow(); // lay dong dang chon tren table  
+        quanLySachService.xoa(lists, row);
+        showDataTable(lists);
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String ten = txtTenSach.getText();
+        List<Sach> listSearch = quanLySachService.searchTheoTen(lists, ten);
+        showDataTable(listSearch);
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnSortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSortActionPerformed
+        quanLySachService.sortByName(lists);
+        showDataTable(lists);
+    }//GEN-LAST:event_btnSortActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        Sach sach = getDataFromView();
+        lists.add(sach);
+        showDataTable(lists);
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void tbHienThiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbHienThiMouseClicked
+        int row = tbHienThi.getSelectedRow();
+        detailSach(row);
+    }//GEN-LAST:event_tbHienThiMouseClicked
+    
+    private void detailSach(int index) {
+        Sach sach = lists.get(index);
+        txtTenSach.setText(sach.getTenSach());
+        txtTacGia.setText(sach.getTacGia());
+    }
+    
+    private Sach getDataFromView() {
+//        Sach sach = new Sach();
+        // B1: Get tat ca tu form 
+        String tenSach = txtTenSach.getText();
+        String tenTacGia = txtTacGia.getText();
+        String namIn = cbNamIn.getSelectedItem().toString();
+        String theLoai = "Truyện ngắn";
+        if (rdTieuThuyet.isSelected()) {
+            theLoai = "Tiểu thuyết";
+        }
+//        B2: Set vao sach
+//        sach.setNamIn(namIn);
+        return new Sach(tenSach, tenTacGia, theLoai, namIn);
+    }
 
     /**
      * @param args the command line arguments
@@ -208,9 +374,11 @@ public class ViewQuanLySach extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSort;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnThoat;
     private javax.swing.JButton btnXoa;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbNamIn;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;

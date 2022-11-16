@@ -14,7 +14,17 @@ public class Sach {
     private String tacGia;
     private String theLoai;
     private String namIn;
-
+//
+//    private boolean check;
+//
+//    public boolean isCheck() {
+//        return check;
+//    }
+//
+//    public void setCheck(boolean check) {
+//        this.check = check;
+//    }
+    
     public Sach() {
     }
 
@@ -57,4 +67,16 @@ public class Sach {
         this.namIn = namIn;
     }
 
+    private String getTrangThai() {
+        int tuoiSach = 2022 - Integer.valueOf(namIn);
+        if (tuoiSach < 20) {
+            return "Sach moi ra";
+        }
+        return "Sach xuat ban lau roi";
+    }
+
+    public Object[] toDataRow() {
+        return new Object[]{tenSach, tacGia, theLoai,
+            namIn, getTrangThai()};
+    }
 }
