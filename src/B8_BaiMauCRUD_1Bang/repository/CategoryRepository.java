@@ -81,10 +81,70 @@ public class CategoryRepository {
         return null;
     }
 
-    public static void main(String[] args) {
-        List<Category> lists = new CategoryRepository().getAll();
-        for (Category c : lists) {
-            System.out.println(c.toString());
+    //C: create
+
+    public boolean add(Category category) {
+        int check = 0;
+        String query = """
+                     INSERT INTO [dbo].[category]
+                                ([category_code]
+                                ,[category_name])
+                          VALUES
+                                (?,?)
+                     """;
+        try ( Connection con = DBConnect.getConnection();  PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setObject(1, category.getCategoryCode());
+            ps.setObject(2, category.getCategoryName());
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
         }
+        return check > 0;
+    }
+
+    public boolean delete(Long id) {
+        int check = 0;
+        String query = """
+                     DELETE FROM [dbo].[category]
+                                      WHERE id = ?
+                     """;
+        try ( Connection con = DBConnect.getConnection();  PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setObject(1, id);
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
+        return check > 0;
+    }
+
+    public boolean update(Category category, Long id) {
+        int check = 0;
+        String query = """
+                     UPDATE [dbo].[category]
+                        SET [category_code] = ?
+                           ,[category_name] = ?
+                      WHERE id = ?
+                     """;
+        try ( Connection con = DBConnect.getConnection();  PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setObject(1, category.getCategoryCode());
+            ps.setObject(2, category.getCategoryName());
+            ps.setObject(3, id);
+
+            check = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
+        return check > 0;
+    }
+
+    public static void main(String[] args) {
+//        List<Category> lists = new CategoryRepository().getAll();
+//        for (Category c : lists) {
+//            System.out.println(c.toString());
+//        }
+        Category category = new Category(5L, "Test", "test1");
+        boolean add = new CategoryRepository().delete(3L);
+        System.out.println(add);
+
     }
 }

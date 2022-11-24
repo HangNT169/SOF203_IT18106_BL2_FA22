@@ -52,4 +52,7 @@ public class Category {
         return "Category{" + "id=" + id + ", categoryCode=" + categoryCode + ", categoryName=" + categoryName + '}';
     }
 
+    public Object[] toDataRow() {
+        return new Object[]{id, categoryCode, categoryName};
+    }
 }
